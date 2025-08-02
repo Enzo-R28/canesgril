@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv() #Carrega as variáveis de ambiente do arquivo .env
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,9 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-ALLOWED_HOSTS = ['railway.app', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ['.railway.app', 'localhost', '104.18.11.246', '127.0.0.1']
 
 # Application definition
 
@@ -42,14 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',  # Para integração com Cloudinary
-    'cloudinary.forms',  # Para formulários de upload de mídia
-    'cloudinary.models',  # Para modelos de mídia do Cloudinary
+    'cloudinary',
+    'cloudinary.forms', 
+    'cloudinary.models',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Para servir arquivos estáticos em produção
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Adicionar esta linha
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'canesgril.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -89,12 +87,11 @@ DATABASES = {
         'PASSWORD': os.getenv('password'),
         'HOST': os.getenv('host'),
         'PORT': os.getenv('port'),
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
+         'OPTIONS': {
+             'sslmode': 'require', # Use SSL for secure connection
+        }           
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -130,31 +127,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Para ambiente de produção
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Whitenoise é a escolha ideal para Railway.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # --- Configurações para Cloudinary ---
 #https://console.cloudinary.com/
-CLOUDINARY_CLOUD_NAME =  os.getenv('CLOUDINARY_CLOUD_NAME')
-CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
-CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
+CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
 
-# Define armaznamentompara padrão para arquivos de mídia
-DEFAULT_FILE_STORAGE = 'cloudinary.models.CloudinaryStorage'
+# Define armazenamento padrão para uploads de mídia
+DEFAULT_FILE_STORAGE = 'cloudinary.models.CloudinaryStorage' 
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Força o uso de cookies CSRF 
 CSRF_COOKIE_SECURE = True
-
+# Força o uso de cookies de sessão
 SESSION_COOKIE_SECURE = True
 
+# Adicione o domínio base do Railway e qualquer domínio personalizado
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.railway.app',
+    'https://*.railway.app', # Para cobrir seu domínio Railway padrão
+
 ]
